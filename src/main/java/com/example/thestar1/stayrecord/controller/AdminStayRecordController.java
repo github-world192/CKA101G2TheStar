@@ -49,7 +49,7 @@ public class AdminStayRecordController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<List> searchStayRecord(@RequestParam(required = false) Integer roomId,
+    public ResponseEntity<List<StayRecordVO>> searchStayRecord(@RequestParam(required = false) Integer roomId,
                                                  @RequestParam(required = false) String stayCustomer,
                                                  @RequestParam(required = false) LocalDate checkInTime,
                                                  @RequestParam(required = false) LocalDate checkOutTime,
@@ -85,5 +85,14 @@ public class AdminStayRecordController {
         return ResponseEntity.ok(stayRecordService.findRoomsByOrderList(orderListId));
     }
 
+    @GetMapping("/find/all")
+    public ResponseEntity<List<StayRecordVO>> searchAllNotCheckOutRoom(HttpSession session){
+        Integer employeeId = (Integer) session.getAttribute("loginEmployee");
+
+        if (employeeId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(stayRecordService.findAllNotCheckOutRoom());
+    }
 }
 

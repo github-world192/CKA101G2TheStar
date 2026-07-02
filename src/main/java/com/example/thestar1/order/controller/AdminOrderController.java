@@ -49,5 +49,13 @@ public class AdminOrderController {
         return ResponseEntity.ok(orderQueryService.findOrderDetail(orderId));
     }
 
+    @GetMapping("/find/order")
+    public ResponseEntity<List<OrderVO>> findAllNotCheckInOrder(HttpSession session){
 
+        Integer employeeId = (Integer) session.getAttribute("loginEmployee");
+        if (employeeId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(orderQueryService.findAllNotCheckInOrder());
+    }
 }

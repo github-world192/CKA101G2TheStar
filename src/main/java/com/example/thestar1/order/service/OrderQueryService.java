@@ -86,6 +86,10 @@ public class OrderQueryService {
         return dtoList;
     }
 
+    public List<OrderVO> findAllNotCheckInOrder(){
+
+        return orderRepository.findNotCheckInOrders();
+    }
 
 
 

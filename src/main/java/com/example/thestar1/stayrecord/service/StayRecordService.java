@@ -53,7 +53,7 @@ public class StayRecordService {
             throw new IllegalStateException("訂單非已付款，無法checkin");
         }
 
-
+        //用stayrecord表格裡面的orderList外鍵查詢有幾筆對應住宿紀錄
         int fullyBooked = stayRecordRepository.countByOrderListvo(orderList);
         if (fullyBooked >= orderList.getQuantity()) {
             throw new IllegalStateException("此明細已配滿房間數");
@@ -165,6 +165,12 @@ public class StayRecordService {
 
         // 回該房型所有房間,依房號排序
         return roomRepository.findByRoomTypeIdOrderByRoomId(orderList.getRoomTypeId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StayRecordVO> findAllNotCheckOutRoom(){
+
+        return stayRecordRepository.findByCheckOutTimeIsNullOrderByOrderListvoOrdervoOrderIdDesc();
     }
 }
 

@@ -331,6 +331,18 @@
             <button class="btn sm" style="margin-bottom:2px" @click="loadCheckInLines">查詢明細</button>
           </div>
 
+          <!-- 未入住訂單清單:點一列自動帶入訂單 ID 並查明細 -->
+          <button class="reslink" style="margin-top:20px" @click="loadPending" :disabled="!employee.on">↻ 查看未入住訂單</button>
+          <table v-if="stay.pending.length" style="margin-top:12px">
+            <thead><tr><th>訂單</th><th>會員</th><th>入住日</th><th>退房日</th><th>實付</th></tr></thead>
+            <tbody>
+              <tr v-for="o in stay.pending" :key="o.orderId" @click="stay.orderId=o.orderId;loadCheckInLines()"
+                  :style="{cursor:'pointer',background: stay.orderId===o.orderId?'#f2ebdd':''}">
+                <td class="oid">#{{ o.orderId }}</td><td>{{ o.memberId }}</td><td>{{ o.checkInDate }}</td><td>{{ o.checkOutDate }}</td><td>${{ o.paidAmount }}</td>
+              </tr>
+            </tbody>
+          </table>
+
           <table v-if="stay.lines.length" style="margin-top:24px">
             <thead><tr><th>房型</th><th>訂房數</th><th>已入住</th><th>剩餘</th><th style="text-align:right">配房</th></tr></thead>
             <tbody>
@@ -371,6 +383,17 @@
             <h3 style="font-size:24px;margin-bottom:24px">辦理退房</h3>
             <div class="field" style="margin-bottom:30px"><label>退房房號</label><input type="number" v-model.number="stay.checkoutRoomId"></div>
             <button class="btn danger block" @click="checkOut" :disabled="!employee.on">確認退房</button>
+            <!-- 在住房間清單:點一列自動帶入退房房號 -->
+            <button class="reslink" style="margin-top:20px" @click="loadStaying" :disabled="!employee.on">↻ 查看在住房間</button>
+            <table v-if="stay.staying.length" style="margin-top:12px">
+              <thead><tr><th>房號</th><th>旅客</th><th>入住時間</th></tr></thead>
+              <tbody>
+                <tr v-for="s in stay.staying" :key="s.stayId" @click="stay.checkoutRoomId=s.roomId"
+                    :style="{cursor:'pointer',background: stay.checkoutRoomId===s.roomId?'#f2ebdd':''}">
+                  <td class="oid">{{ s.roomId }}</td><td>{{ s.stayCustomer }}</td><td>{{ fmt(s.checkInTime) }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -423,9 +446,9 @@ createApp({
       form:{checkInDate:d(1),checkOutDate:d(2),couponId:null,rooms:[{roomTypeId:null,qty:1}]},
       orders:{status:0,page:0,size:10,list:[],totalPages:0,counts:{},open:{},detail:{}},
       admin:{status:0,page:0,size:10,list:[],totalPages:0,counts:{},open:{},detail:{}},
-      stay:{orderId:null,lines:[],activeListId:null,activeTypeName:'',rooms:[],
+      stay:{orderId:null,pending:[],lines:[],activeListId:null,activeTypeName:'',rooms:[],
             checkin:{orderListId:null,roomId:null,stayCustomer:''},
-            checkoutRoomId:null,find:{roomId:null,stayCustomer:'',checkInTime:'',checkOutTime:''},records:[]},
+            checkoutRoomId:null,staying:[],find:{roomId:null,stayCustomer:'',checkInTime:'',checkOutTime:''},records:[]},
       toasts:[], logLines:[], _tid:0,
     };
   },
@@ -489,6 +512,11 @@ createApp({
       try{ await this.api(`/thestar/order/cancel/${orderId}`,{method:'POST',headers:{'Content-Type':'text/plain'},body:reason});
         this.toast('ok','已取消',`No.${orderId}`); this.loadOrders();
       }catch(e){ this.toast('err','取消失敗',this.errMsg(e)); } },
+    // 載入所有已付款且還沒配過房的訂單
+    async loadPending(){ try{
+      this.stay.pending=await this.api('/thestar/admin/order/find/order');
+      this.toast('ok','查詢完成',`未入住 ${this.stay.pending.length} 筆`);
+    }catch(e){ this.stay.pending=[]; this.toast('err','查詢失敗',this.errMsg(e)); } },
     async loadCheckInLines(){ if(!this.stay.orderId){ this.toast('warn','請先輸入訂單 ID'); return; }
       try{ this.stay.lines=await this.api(`/thestar/admin/stayrecord/checkin-order/${this.stay.orderId}`);
         this.stay.rooms=[]; this.stay.activeListId=null; this.stay.activeTypeName='';
@@ -511,12 +539,22 @@ createApp({
         this.stay.lines=await this.api(`/thestar/admin/stayrecord/checkin-order/${this.stay.orderId}`);
         this.stay.rooms=await this.api(`/thestar/admin/stayrecord/checkin-rooms/${this.stay.activeListId}`);
         this.stay.checkin.roomId=null; this.stay.checkin.stayCustomer='';
+        // 有載過未入住清單就重整 配過房的訂單會從清單消失
+        if(this.stay.pending.length) this.loadPending();
       }catch(e){ this.toast('err','入住失敗',this.errMsg(e)); } },
     async checkOut(){ if(!this.stay.checkoutRoomId){ this.toast('warn','請輸入退房房號'); return; }
       if(!confirm(`房號 ${this.stay.checkoutRoomId} 確認退房？`))return;
       try{ const r=await this.api(`/thestar/admin/stayrecord/checkout/${this.stay.checkoutRoomId}`,{method:'POST'});
         this.toast('ok','退房成功',r);
+        // 退房後清空房號 有載過在住清單就重整讓退掉的那間消失
+        this.stay.checkoutRoomId=null;
+        if(this.stay.staying.length) this.loadStaying();
       }catch(e){ this.toast('err','退房失敗',this.errMsg(e)); } },
+    // 載入所有未退房的在住房間
+    async loadStaying(){ try{
+      this.stay.staying=await this.api('/thestar/admin/stayrecord/find/all');
+      this.toast('ok','查詢完成',`在住 ${this.stay.staying.length} 間`);
+    }catch(e){ this.stay.staying=[]; this.toast('err','查詢失敗',this.errMsg(e)); } },
     async findStay(){ try{
       const q=new URLSearchParams(); const f=this.stay.find;
       if(f.roomId)q.set('roomId',f.roomId); if(f.stayCustomer)q.set('stayCustomer',f.stayCustomer);

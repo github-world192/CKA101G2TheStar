@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
-                                                        //用的是hibernate捷徑函數
+
+//用的是hibernate捷徑函數
 public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
 
     //自訂sql第一為了防併發 第二需要條件過濾
@@ -50,4 +51,10 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
     //後台人員用查詢訂單
     Page<OrderVO> findByOrderStatus(Byte orderStatus, Pageable pageable);
 
+
+    //入住時查詢所有訂單按鈕
+    @Query("SELECT o FROM OrderVO o WHERE o.orderStatus = 1 " +
+            "AND NOT EXISTS (SELECT s FROM StayRecordVO s WHERE s.orderListvo.ordervo = o) " +
+            "ORDER BY o.orderId")
+    List<OrderVO> findNotCheckInOrders();
 }
