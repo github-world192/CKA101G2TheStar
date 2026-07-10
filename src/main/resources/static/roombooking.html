@@ -895,8 +895,8 @@
                 <button :class="{on:gateTab==='staff'}" @click="gateTab='staff'">員工登入</button>
             </div>
             <div v-if="gateTab==='member'">
-                <p class="hint" style="margin-bottom:26px">貴賓請先於官網首頁登入，完成後即自動進入專屬服務</p>
-                <a class="btn block" href="/index.html">前往首頁登入</a>
+                <p class="hint" style="margin-bottom:26px">貴賓請先於登入頁面登入，完成後即自動進入專屬服務</p>
+                <a class="btn block" href="/login.html?redirect=/roombooking.html">前往登入頁面登入</a>
             </div>
             <div v-else>
                 <div class="field"><label>Employee ID</label><input type="number" v-model.number="employee.id"
