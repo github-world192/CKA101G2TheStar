@@ -325,25 +325,12 @@
         <h2 class="section-title">最新消息</h2>
         <div class="gold-line"></div>
         <div class="news-box">
-          <div class="news-item">
-            <span class="news-date">2026/05/19</span>
-            <a class="news-title" href="/articles.html">夏季住房專案開放預訂，享海景房型優惠</a>
+          <div class="news-item" v-for="news in latestNews" :key="news.articleId">
+            <span class="news-date">{{ formatArticleDate(news.createAt) }}</span>
+            <a class="news-title" :href="'/articles.html?article=' + news.articleId">{{ news.title }}</a>
           </div>
-          <div class="news-item">
-            <span class="news-date">2026/05/12</span>
-            <a class="news-title" href="/articles.html">戶外泳池保養公告與開放時間調整</a>
-          </div>
-          <div class="news-item">
-            <span class="news-date">2026/05/05</span>
-            <a class="news-title" href="/articles.html">SPA 芳療中心推出雙人放鬆療程</a>
-          </div>
-          <div class="news-item">
-            <span class="news-date">2026/04/28</span>
-            <a class="news-title" href="/articles.html">餐廳新增季節限定海鮮套餐</a>
-          </div>
-          <div class="news-item">
-            <span class="news-date">2026/04/20</span>
-            <a class="news-title" href="/articles.html">館內購物服務新增伴手禮預訂功能</a>
+          <div class="news-item" v-if="newsLoaded && latestNews.length === 0">
+            <span class="news-title">目前尚無最新消息</span>
           </div>
           <div class="news-more">
             <a href="/articles.html" class="text-link">查看全部公告</a>
@@ -532,6 +519,8 @@
         loginMessage: '',
         loginSuccessMessage: '',
         showResendVerify: false,
+        latestNews: [],
+        newsLoaded: false,
         loginForm: {
           memberEmail: '',
           memberPassword: '',
@@ -550,6 +539,7 @@
       this.cleanIndexUrl();
       this.loadRememberedLogin();
       this.checkMemberStatus();
+      this.loadLatestNews();
 
       document.addEventListener('click', () => {
         this.memberDropdownOpen = false;
@@ -557,6 +547,24 @@
     },
 
     methods: {
+      formatArticleDate(value) {
+        if (!value) return '';
+        return new Intl.DateTimeFormat('zh-TW', {
+          year: 'numeric', month: '2-digit', day: '2-digit'
+        }).format(new Date(value));
+      },
+
+      async loadLatestNews() {
+        try {
+          const response = await fetch('/thestar/content/news');
+          if (response.ok) this.latestNews = await response.json();
+        } catch (e) {
+          this.latestNews = [];
+        } finally {
+          this.newsLoaded = true;
+        }
+      },
+
       cleanIndexUrl() {
         if (location.pathname === '/index.html') {
           history.replaceState(null, '', '/');
