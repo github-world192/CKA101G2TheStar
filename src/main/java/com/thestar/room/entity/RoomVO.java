@@ -25,7 +25,7 @@ public class RoomVO {
 	private Integer roomTypeId;
 
 	@Column(name = "ROOM_STATUS", columnDefinition = "TINYINT")
-	private Byte roomStatus;
+	private Byte roomStatus = (byte)0;
 
 	public static final int STATUS_AVAILABLE = 0; // 未入住
 	public static final int STATUS_OCCUPIED = 1; // 已入住

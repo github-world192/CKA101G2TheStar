@@ -14,7 +14,9 @@
 		</header>
 
 		<main class="admin-content">
-			<form th:action="@{/room/update}" th:object="${roomVO}" method="post">
+			<form
+				th:action="${roomVO.roomId == null} ? @{/room/insert} : @{/room/update}"
+				th:object="${roomVO}" method="post">
 
 				<input type="hidden" th:field="*{roomId}"
 					th:if="${roomVO.roomId != null}" />
