@@ -97,8 +97,9 @@ body {
 <body>
 	<div class="container">
 		<header class="admin-header">
-			<h1 th:text="${roomVO.roomId == null} ? '新增房間' : '修改房間資訊'">房間設定</h1>
 			<p class="section-label">ROOM CONFIGURATION</p>
+			<h1 th:text="${roomVO.roomId == null} ? '新增房間' : '修改房間資訊'">房間設定</h1>
+
 		</header>
 
 		<main class="admin-content">

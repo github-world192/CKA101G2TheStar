@@ -75,9 +75,7 @@ a {
 	text-decoration: none
 }
 </style>
-
 </head>
-
 <body>
 	<header>
 		<div class="hbar">
@@ -92,6 +90,7 @@ a {
 		</div>
 	</header>
 
+
 	<div class="container">
 		<!-- 與房型頁面一致的 Header 結構 -->
 		<header class="admin-header">
@@ -101,15 +100,18 @@ a {
 		</header>
 
 		<main class="admin-content">
+
 			<!-- 統一的訊息顯示區塊：成功與失敗都放在這裡 -->
 			<div th:if="${successMessage}" class="msg-box success">
 				<i class="fa-solid fa-check-circle"></i> <span
 					th:text="${successMessage}"></span>
 			</div>
+
 			<div th:if="${errorMessage}" class="msg-box error">
 				<i class="fa-solid fa-triangle-exclamation"></i> <span
 					th:text="${errorMessage}"></span>
 			</div>
+
 
 			<div class="toolbar">
 				<div class="admin-stats">
@@ -118,14 +120,16 @@ a {
 						style="color: #9c7c4f; font-weight: bold;"> (剩餘可用額度: <span
 						th:text="${50 - #lists.size(roomList)}">50</span> 間)
 					</span>
-				</div>
 
+				</div>
 				<!-- 新增按鈕 -->
 				<a th:href="@{/room/add}" class="btn btn-primary"> <i
 					class="fa-solid fa-plus"></i> 新增房間
 				</a> <span th:if="${#lists.size(roomList) >= 50}"
 					style="color: #a85b50; font-weight: bold;"> 已達最大上限 </span>
 			</div>
+
+
 
 			<table class="room-table">
 				<thead>
@@ -144,6 +148,7 @@ a {
 							th:text="${room.roomTypeName != null ? room.roomTypeName : '未知'}"></td>
 						<td><span class="status-badge"
 							th:text="${room.roomStatus == 0 ? '空房' : (room.roomStatus == 1 ? '已入住' : '待清潔')}"></span>
+
 						</td>
 						<td th:text="${room.roomSwitchStatus ? '已上架' : '未上架'}"></td>
 						<td class="actions"><a
@@ -151,6 +156,7 @@ a {
 							title="修改"><i class="fa-solid fa-pen"></i></a> <a
 							th:href="@{'/room/details/' + ${room.roomId}}" class="btn-icon"
 							title="查看詳情"><i class="fa-solid fa-eye"></i></a>
+
 							<form th:action="@{/room/delete}" method="post"
 								style="display: inline;">
 								<input type="hidden" name="roomId" th:value="${room.roomId}" />
@@ -165,5 +171,6 @@ a {
 		</main>
 	</div>
 	<script th:src="@{/js/roomManage.js}"></script>
+
 </body>
 </html>

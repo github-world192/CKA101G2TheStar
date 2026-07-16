@@ -3,135 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <title>房間詳情 | THE STAR</title>
-<link rel="stylesheet" th:href="@{/css/roomManage.css}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 :root {
-    --serif: 'Cormorant Garamond', 'Noto Serif TC', serif;
-    --sans: 'Jost', 'Noto Serif TC', system-ui, sans-serif;
-    --ink: #23211c;
-    --gold: #9c7c4f;
-    --line: #e0dcd5;
+	--serif: 'Cormorant Garamond', 'Noto Serif TC', serif;
+	--sans: 'Jost', 'Noto Serif TC', system-ui, sans-serif;
+	--ink: #23211c;
+	--gold: #9c7c4f;
+	--gold-dark: #80623a;
+	--line: #e0dcd5;
+	--cream: #f6f2ea;
+	--bg-header: #fbf9f4;
 }
 
 body {
-    font-family: var(--sans);
-    background: #f6f2ea;
-    color: var(--ink);
-    font-size: 15px;
-    line-height: 1.7;
-    margin: 0;
+	font-family: var(--sans);
+	background: var(--cream);
+	color: var(--ink);
+	margin: 0;
+	padding: 40px 0;
 }
 
 .container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: transparent;
-    padding: 0;
+	max-width: 600px;
+	margin: 0 auto;
 }
 
+/* Header 風格 */
 .admin-header {
-    text-align: center;
-    margin-bottom: 40px;
-    background: transparent !important;
-    border: none !important;
+	text-align: center;
+	margin-bottom: 40px;
+	padding: 30px;
+	background: var(--bg-header);
 }
 
-.admin-header h1 { font-family: var(--serif); margin-bottom: 10px; }
-.section-label { color: var(--gold); font-size: 11px; letter-spacing: 4px; }
+.admin-header h1 {
+	font-family: var(--serif);
+	font-size: 32px;
+	margin: 0 0 10px 0;
+	font-weight: 500;
+}
 
-/* 唯讀卡片樣式 */
+.section-label {
+	color: var(--gold);
+	font-size: 11px;
+	letter-spacing: 4px;
+	text-transform: uppercase;
+	margin: 0;
+}
+
+/* 內容卡片與邊框 */
 .admin-content {
-    background: white;
-    padding: 40px;
-    border: 1px solid var(--line);
+	background: white;
+	padding: 40px;
+	border: 1px solid var(--line);
 }
 
-.detail-group { margin-bottom: 25px; }
+/* 欄位樣式 */
+.detail-group {
+	margin-bottom: 25px;
+}
+
 .detail-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #888;
-    font-size: 13px;
-    letter-spacing: 1px;
-    font-weight: bold;
-    text-transform: uppercase;
+	display: block;
+	margin-bottom: 8px;
+	color: #888;
+	font-size: 13px;
+	font-weight: 500;
 }
 
 .detail-value {
-    padding: 12px;
-    background: #fbfbfb;
-    border: 1px solid var(--line);
-    color: #333;
-    font-weight: 500;
-    
-    /* 統一按鈕樣式 */
+	width: 100%;
+	padding: 12px;
+	border: 1px solid var(--line);
+	box-sizing: border-box;
+	color: #333;
+	background: #fbfbfb;
+	font-size: 14px;
+}
+
+/* 按鈕樣式 */
+.form-actions {
+	margin-top: 30px;
+}
+
 .btn {
-    display: inline-block;
-    padding: 10px 25px;
-    background: #9c7c4f; /* 修改頁的 gold 顏色 */
-    color: white !important;
-    text-decoration: none !important; /* 移除底線 */
-    border: 1px solid #9c7c4f;
-    cursor: pointer;
-    transition: all 0.3s ease;
+	display: inline-block;
+	padding: 12px 30px;
+	text-decoration: none;
+	font-size: 14px;
+	transition: 0.3s;
+	border: 1px solid var(--ink);
+	background: transparent;
+	color: var(--ink);
+	cursor: pointer;
 }
 
 .btn:hover {
-    background: #7d633f; /* Hover 時變深一點 */
-    color: white !important;
-}
-
-.btn.ghost {
-    background: transparent;
-    color: #9c7c4f !important;
-    border: 1px solid #9c7c4f;
-}
-
-.btn.ghost:hover {
-    background: #9c7c4f;
-    color: white !important;
-}
-
+    background: var(--ink);
+    color: white;
 }
 </style>
 </head>
 
 <body>
-    <div class="container">
-        <header class="admin-header">
-            <h1>房間詳細資料</h1>
-            <p class="section-label">ROOM DETAILS</p>
-        </header>
 
-        <main class="admin-content" th:if="${roomVO}">
-            <div class="detail-group">
-                <span class="detail-label">房間編號</span>
-                <div class="detail-value" th:text="${roomVO.roomId}"></div>
-            </div>
+	<div class="container">
+		<header class="admin-header">
+		<p class="section-label">ROOM DETAILS</p>
+			<h1>房間詳細資料</h1>
+		</header>
 
-            <div class="detail-group">
-                <span class="detail-label">房型資訊</span>
-                <div class="detail-value" th:text="'(' + ${roomVO.roomTypeId} + ') ' + (${roomVO.roomTypeName != null ? roomVO.roomTypeName : '未知房型'})"></div>
-            </div>
+		<main class="admin-content" th:if="${roomVO}">
+			<div class="detail-group">
+				<span class="detail-label">房間編號</span>
+				<div class="detail-value" th:text="${roomVO.roomId}"></div>
+			</div>
 
-            <div class="detail-group">
-                <span class="detail-label">房間狀態</span>
-                <div class="detail-value" th:text="'(' + ${roomVO.roomStatus} + ') ' + 
+			<div class="detail-group">
+				<span class="detail-label">房型資訊</span>
+				<div class="detail-value"
+					th:text="'(' + ${roomVO.roomTypeId} + ') ' + (${roomVO.roomTypeName != null ? roomVO.roomTypeName : '未知房型'})"></div>
+			</div>
+
+			<div class="detail-group">
+				<span class="detail-label">房間狀態</span>
+				<div class="detail-value"
+					th:text="'(' + ${roomVO.roomStatus} + ') ' + 
                     (${roomVO.roomStatus == 0 ? '空房' : 
                       (roomVO.roomStatus == 1 ? '已入住' : '待清潔')})"></div>
-            </div>
+			</div>
 
-            <div class="detail-group">
-                <span class="detail-label">啟用情況</span>
-                <div class="detail-value" th:text="${roomVO.roomSwitchStatus ? '(1) 已上架' : '(0) 未上架'}"></div>
-            </div>
+			<div class="detail-group">
+				<span class="detail-label">啟用情況</span>
+				<div class="detail-value"
+					th:text="${roomVO.roomSwitchStatus ? '(1) 已上架' : '(0) 未上架'}"></div>
+			</div>
 
-            <div class="form-actions" style="margin-top: 30px;">
-                <a th:href="@{/room/manage}" class="btn ghost">返回列表</a>
-            </div>
-        </main>
-    </div>
+			<div class="form-actions">
+				<a th:href="@{/room/manage}" class="btn ghost">返回列表</a>
+			</div>
+		</main>
+	</div>
 </body>
 </html>
