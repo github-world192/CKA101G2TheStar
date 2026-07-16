@@ -136,10 +136,13 @@ public class RoomTypeController {
 		return "redirect:/roomtype/manage";
 	}
 
-	// 執行刪除
+	// 執行刪除指定房型
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Integer id) {
-		service.deleteRoomType(id);
-		return "redirect:/roomtype/manage";
+	    // 刪除房型 (根據你的 Service 的方法)
+	    service.deleteRoomType(id);
+	    
+	    // 刪除後跳轉回房型管理列表頁面
+	    return "redirect:/roomtype/manage";
 	}
 }

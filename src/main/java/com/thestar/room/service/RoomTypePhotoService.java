@@ -100,4 +100,9 @@ public class RoomTypePhotoService {
 	public List<RoomTypePhotoVO> getAllPhotos() {
 		return roomTypePhotoRepository.findAll();
 	}
+	
+	// roomList前台用，抓取第一張圖
+	public RoomTypePhotoVO findFirstByRoomTypeId(Integer roomTypeId) {
+	    return roomTypePhotoRepository.findTop1ByRoomTypeVORoomTypeIdOrderByRoomTypePhotoIdAsc(roomTypeId);
+	}
 }

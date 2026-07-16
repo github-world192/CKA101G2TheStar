@@ -160,10 +160,27 @@ public class RoomTypePhotoController {
 	}
 
 	// 刪除圖片
-	@PostMapping("/delete/{photoId}")
-	public String deletePhoto(@PathVariable Integer photoId) {
-		service.deletePhotoById(photoId); // 你需要確認 Service 有此方法
-		return "redirect:/room/manage";
+	@PostMapping("/delete/{id}")
+	// 接收圖片ID與房型ID，刪除指定圖片後重導向回該房型的圖片管理頁面
+	public String delete(@PathVariable("id") Integer id, @RequestParam("roomTypeId") Integer roomTypeId) {
+		service.deletePhotoById(id);
+		return "redirect:/roomtypephoto/addPage?roomTypeId=" + roomTypeId;
+	}
+	
+	// 檢視房型圖片詳細資訊，僅可檢視不可編輯
+	@GetMapping("/detailsPage")
+	public String viewDetails(@RequestParam("roomTypeId") Integer roomTypeId, Model model) {
+		// 1. 取得該房型所有圖片
+	    List<RoomTypePhotoVO> photoList = service.getPhotosByRoomTypeId(roomTypeId);
+	    
+	    // 2. 取得所有房型列表 (供下拉選單使用)
+	    List<RoomTypeVO> roomTypeList = roomTypeService.getAllRoomTypes();
+	    
+	    model.addAttribute("photoList", photoList);
+	    model.addAttribute("roomTypeList", roomTypeList); // 確保傳遞這個給 HTML
+	    model.addAttribute("roomTypeId", roomTypeId);      // 傳遞當前選中的 ID
+	    
+	    return "admin/room/photoDetails"; // 新增一個專門檢視用的 HTML
 	}
 
 }

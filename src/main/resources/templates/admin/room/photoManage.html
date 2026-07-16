@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>房型圖片管理 - THE STAR</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" th:href="@{/css/photoManage.css}">
 </head>
 <body>
@@ -31,11 +33,15 @@
 						width="100px">
 					</td>
 					<td th:text="${room.roomTypeName}">房型名稱</td>
-					<td>
-						<!-- 點擊進入時帶入 roomTypeId，方便您進行新增或編輯 --> <a
+					<td><a
 						th:href="@{/roomtypephoto/addPage(roomTypeId=${room.roomTypeId})}"
-						class="btn-primary">管理圖片</a>
-					</td>
+						class="btn-icon" title="管理圖片"> <i class="fa-solid fa-pen"></i>
+							<!-- 使用 Pen 圖示表示管理圖片 -->
+					</a> <a
+						th:href="@{/roomtypephoto/detailsPage(roomTypeId=${room.roomTypeId})}"
+						class="btn-icon" title="檢視圖片"> <i class="fa-solid fa-eye"></i>
+							<!-- 檢視按鈕 (眼睛圖示) -->
+					</a></td>
 				</tr>
 			</tbody>
 		</table>
