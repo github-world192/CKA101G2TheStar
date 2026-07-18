@@ -375,7 +375,7 @@
 					</div>
 
 					<label class="login-remember"> <input type="checkbox"
-						v-model="loginForm.rememberMe"> <span>記住我</span>
+						v-model="loginForm.rememberMe"> <span>記住帳號</span>
 					</label>
 
 					<button class="login-submit" type="submit" :disabled="loginLoading">
@@ -396,6 +396,9 @@
 				<div class="login-modal-links">
 					<div>
 						還沒有帳號 <a href="/register.html">註冊會員</a>
+					</div>
+					<div>
+						無法登入 <a href="/forgot-password.html">忘記密碼</a>
 					</div>
 					<div>
 						回到網站 <a href="/index.html">回首頁</a>
@@ -522,11 +525,11 @@
 
       loadRememberedLogin() {
         const rememberedEmail = localStorage.getItem('theStarRememberEmail') || '';
-        const rememberedPassword = localStorage.getItem('theStarRememberPassword') || '';
+        localStorage.removeItem('theStarRememberPassword');
 
         this.loginForm.memberEmail = rememberedEmail;
-        this.loginForm.memberPassword = rememberedPassword;
-        this.loginForm.rememberMe = rememberedEmail !== '' && rememberedPassword !== '';
+        this.loginForm.memberPassword = '';
+        this.loginForm.rememberMe = rememberedEmail !== '';
       },
 
       clearLoginMessages() {
@@ -634,7 +637,7 @@
 
           if (this.loginForm.rememberMe) {
             localStorage.setItem('theStarRememberEmail', this.loginForm.memberEmail);
-            localStorage.setItem('theStarRememberPassword', this.loginForm.memberPassword);
+            localStorage.removeItem('theStarRememberPassword');
           } else {
             localStorage.removeItem('theStarRememberEmail');
             localStorage.removeItem('theStarRememberPassword');

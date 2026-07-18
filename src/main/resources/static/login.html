@@ -66,10 +66,13 @@
                 placeholder="請輸入會員密碼">
             </div>
 
-            <label class="remember-row">
-              <input type="checkbox" v-model="form.rememberMe">
-              <span>記住我</span>
-            </label>
+            <div class="login-options">
+              <label class="remember-row">
+                <input type="checkbox" v-model="form.rememberMe">
+                <span>記住帳號</span>
+              </label>
+              <a class="forgot-link" href="/forgot-password.html">忘記密碼？</a>
+            </div>
 
             <button class="login-submit" type="submit" :disabled="submitting">
               {{ submitting ? '登入中...' : '登入會員' }}
@@ -94,6 +97,14 @@
               {{ successMsg }}
             </p>
           </form>
+
+          <div v-if="googleEnabled" class="social-login">
+            <div class="social-divider"><span>OR</span></div>
+            <a class="google-login-btn" :href="googleLoginUrl">
+              <span class="google-mark">G</span>
+              使用 Google 登入
+            </a>
+          </div>
 
           <div class="login-footer">
             <p>還沒有會員帳號？</p>

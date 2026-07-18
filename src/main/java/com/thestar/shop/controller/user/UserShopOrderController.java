@@ -261,7 +261,7 @@ public class UserShopOrderController {
 	@org.springframework.web.bind.annotation.RequestMapping(value = "ecpay/result", method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public String ecpayResult(@RequestParam("orderId") Integer orderId, HttpSession session, ModelMap model) {
+	public String ecpayResult(@RequestParam("orderId") Integer orderId, ModelMap model) {
 
 		ShopOrderVO order = shopOrderSvc.getOneShopOrder(orderId);
 		List<ProductOrderItemVO> itemList = productOrderItemSvc.getByShopOrderId(orderId);
