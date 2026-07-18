@@ -8,12 +8,3 @@
 | [member.wang@hotel.com](mailto:member.wang@hotel.com) | 會員管理員  |
 | [content.chen@hotel.com](mailto:content.chen@hotel.com) | 文章管理員  |
 
-## 資料庫初始化
-
-先建立 `thestar` 資料庫並匯入專案原始 schema／seed data，再執行 HR 權限 migration：
-
-```bash
-mysql -u root -p thestar < database/migrations/20260717_add_hr_role.sql
-```
-
-這支 migration 會建立或啟用 `ROLE_HR`，並將 `hr.lin@hotel.com` 的角色調整為只保留 HR。腳本不依賴固定 ID，可安全重複執行。執行後重新啟動應用程式，並讓該帳號重新登入。
