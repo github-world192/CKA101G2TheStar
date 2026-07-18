@@ -33,6 +33,24 @@ createApp({
   },
 
   methods: {
+    goBack() {
+      try {
+        const previousUrl = document.referrer ? new URL(document.referrer) : null;
+
+        if (
+          previousUrl
+          && previousUrl.origin === location.origin
+          && previousUrl.pathname !== location.pathname
+        ) {
+          history.back();
+          return;
+        }
+      } catch (e) {
+      }
+
+      location.href = '/index.html';
+    },
+
     normalizeRedirect(value) {
       if (!value || !value.startsWith('/') || value.startsWith('//')) {
         return '/index.html';
