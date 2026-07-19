@@ -15,6 +15,34 @@
 	.shop-navbar .fa-bag-shopping, .shop-navbar .cart-icon {
 	display: none !important;
 }
+
+.shop-navbar {
+	background: rgba(251, 249, 244, .92) !important;
+	backdrop-filter: blur(8px) !important;
+	border-bottom: 1px solid #e4ddd0 !important; /* 使用範本的 --line 顏色 */
+	position: relative !important;
+	z-index: 40 !important;
+}
+
+/* 調整連結文字顏色 */
+.shop-navbar .navbar-links>a {
+	color: #5b564c !important; /* 使用範本的 --soft 顏色 */
+}
+
+.shop-navbar .navbar-links>a:hover {
+	color: #23211c !important; /* 使用範本的 --ink 顏色 */
+}
+
+/* 調整「品牌字」顏色 */
+.shop-navbar .navbar-brand .brand-zh {
+	color: #23211c !important; /* 使用範本的 --ink 顏色 */
+}
+
+/* 調整當前頁面連結的高亮與底線 */
+.shop-navbar .nav-links .active {
+	color: #9c7c4f !important; /* 使用範本的 --gold 顏色 */
+	border-bottom-color: #9c7c4f !important;
+}
 </style>
 
 

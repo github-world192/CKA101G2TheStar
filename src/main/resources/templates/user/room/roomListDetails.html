@@ -7,6 +7,7 @@
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/roomList.css">
 <style>
 /* 基礎設定 */
 * {
@@ -128,6 +129,55 @@ background: #977;
 	.shop-navbar .fa-bag-shopping, .shop-navbar .cart-icon {
 	display: none !important;
 }
+
+* 強制隱藏導覽列中的購物車圖示與連結 */
+.shop-navbar a[href*="cart"], .shop-navbar a[href*="Cart"], .shop-navbar .fa-cart-shopping,
+	.shop-navbar .fa-bag-shopping, .shop-navbar .cart-icon {
+	display: none !important;
+}
+
+.shop-navbar {
+	background: rgba(251, 249, 244, .92) !important;
+	backdrop-filter: blur(8px) !important;
+	border-bottom: 1px solid #e4ddd0 !important; /* 使用範本的 --line 顏色 */
+	position: relative !important;
+	z-index: 40 !important;
+}
+
+/* 調整連結文字顏色 */
+.shop-navbar .navbar-links>a {
+	color: #5b564c !important; /* 使用範本的 --soft 顏色 */
+}
+
+.shop-navbar .navbar-links>a:hover {
+	color: #23211c !important; /* 使用範本的 --ink 顏色 */
+}
+
+/* 調整「品牌字」顏色 */
+.shop-navbar .navbar-brand .brand-zh {
+	color: #23211c !important; /* 使用範本的 --ink 顏色 */
+}
+
+/* 調整當前頁面連結的高亮與底線 */
+.shop-navbar .nav-links .active {
+	color: #9c7c4f !important; /* 使用範本的 --gold 顏色 */
+	border-bottom-color: #9c7c4f !important;
+	:root { --gold: #9c7c4f; --ink: #23211c; --cream: #f6f2ea; }
+body { background: var(--cream); color: var(--ink); font-family: 'Jost', sans-serif; margin: 0; }
+.detail-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+.room-title { font-family: 'Cormorant Garamond', serif; color: var(--gold); text-align: center; font-size: 40px; margin-bottom: 40px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.slider-wrapper { position: relative; }
+.slider img { width: 100%; height: 400px; object-fit: cover; }
+.btn-book { background: var(--gold); color: white; border: none; padding: 15px 30px; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+.description { line-height: 1.8; margin-bottom: 20px; }
+.room-specs h3 { font-size: 14px; letter-spacing: 2px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+.spec-item { margin: 10px 0; }
+.highlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+.highlights { margin-top: 50px; border-top: 1px solid #ccc; padding-top: 20px; }
+@media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+}
+
 </style>
 </head>
 <body>
@@ -137,39 +187,59 @@ background: #977;
 		th:replace="~{user/common/frontNavbar :: navbar('room', true, 'shop-navbar site-navbar-dark', false)}"></div>
 
 	<div class="detail-container">
+    <h1 class="room-title">雙人房</h1>
 
 
-		<!-- 左側：圖片區 -->
-		<div class="img-gallery">
-			<!-- 當有照片時顯示真實照片 -->
-			<img class="img-main" th:if="${room.firstPhoto != null}"
-				th:src="@{/roomtypephoto/display/photo/{id}(id=${room.firstPhoto.roomTypePhotoId})}"
-				alt="房型圖片">
+		<div class="detail-grid">
+        <!-- Image Slider Section -->
+        <div class="slider-wrapper">
+            <div class="slider">
+                <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000" alt="Room View">
+            </div>
+            <button class="nav-prev"><i class="fas fa-chevron-left"></i></button>
+            <button class="nav-next"><i class="fas fa-chevron-right"></i></button>
+            <div class="dots"><span></span><span></span><span></span><span></span></div>
+        </div>
 
-			<!-- 當沒有照片 (firstPhoto 為 null) 時，顯示您指定的 noimage.jpg -->
-			<img class="img-main" th:unless="${room.firstPhoto != null}"
-				th:src="@{/images/noimage.jpg}" alt="暫無圖片">
-		</div>
+        <!-- Right Description Section -->
+        <div class="info-wrapper">
+            <button class="btn-book">BOOK NOW</button>
+            <p class="description">
+                Superior Terrace Pool View rooms are defined by chic contemporary style, 
+                from a balcony to soft designer linens on your choice of double or twin beds, 
+                with access to modern amenities, as electronic safe, a Nespresso coffee machine, 
+                tea facilities and complementary WiFi.
+            </p>
+            
+            <div class="room-specs">
+                <h3>ROOM DETAILS</h3>
+                <div class="spec-item"><i class="fas fa-expand-arrows-alt"></i> 35 m²</div>
+                <div class="spec-item"><i class="fas fa-users"></i> Maximum 2 adults</div>
+                <div class="spec-item"><i class="fas fa-bed"></i> Double or Twin</div>
+                <div class="rating">
+                    <span>Tripadvisor Traveler Rating</span><br>
+                    <i class="fas fa-circle"></i><i class="fas fa-circle"></i><i class="fas fa-circle"></i><i class="fas fa-circle"></i><i class="fas fa-circle-notch"></i>
+                    <small>5,588 reviews</small>
+                </div>
+                <a href="#" class="read-reviews">Read Reviews</a>
+            </div>
+        </div>
+    </div>
 
-
-		<!-- 右側：資訊區 -->
-		<div class="product-info">
-			<h1 class="room-name" th:text="${room.roomTypeName}">房型名稱</h1>
-			<div class="gold-line"></div>
-			<p class="room-desc" th:text="${room.roomTypeContent}">房型詳細介紹內容...</p>
-
-			<div class="price-area">
-				<div class="price-label">每晚房價</div>
-				<div class="price-value">
-					TWD <span th:text="${room.roomTypePrice}">0</span>
-				</div>
-			</div>
-
-			<a href="/roombooking.html" class="btn-book">立即預訂</a> <a
-				th:href="@{/roomList/list}" class="btn-back">返回房型列表</a>
-		</div>
-	</div>
+    <!-- Highlights Section -->
+    <div class="highlights">
+        <h3>HIGHLIGHTS</h3>
+        <div class="highlight-grid">
+            <div><i class="fas fa-swimmer"></i> Pool view</div>
+            <div><i class="fas fa-wifi"></i> Complimentary WiFi</div>
+            <div><i class="fas fa-lock"></i> In-room safe</div>
+            <div><i class="fas fa-tshirt"></i> Laundry service</div>
+            <div><i class="fas fa-coffee"></i> Nespresso machine</div>
+        </div>
+    </div>
+</div>
 
 	<script th:src="@{/js/header-auth.js}"></script>
+	<script th:src="@{/js/roomList.js}"></script>
 </body>
 </html>

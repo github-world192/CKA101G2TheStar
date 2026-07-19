@@ -16,7 +16,7 @@ import com.thestar.room.service.RoomTypePhotoService;
 import com.thestar.room.service.RoomTypeService;
 
 @Controller
-@RequestMapping("/roomList") // 統一網址前綴
+@RequestMapping("/roomlist") // 統一網址前綴
 public class RoomListController {
 
 	@Autowired
@@ -49,7 +49,7 @@ public class RoomListController {
 		RoomTypeVO roomType = roomTypeService.getOneRoomType(id);
 
 		if (roomType == null) {
-			return "redirect:/roomList/list";
+			return "redirect:/roomlist/list";
 		}
 
 		// 取得該房型所有照片
