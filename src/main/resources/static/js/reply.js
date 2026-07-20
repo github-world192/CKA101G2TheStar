@@ -105,7 +105,6 @@ async function submitReply(event) {
         const dbFormData = new URLSearchParams();
         dbFormData.append('ticketId', ticketId);
         dbFormData.append('replyContent', replyContent);
-        dbFormData.append('employeeId', 1);
 
         const dbRes = await fetch('/feedback/reply', {
             method: 'POST',
