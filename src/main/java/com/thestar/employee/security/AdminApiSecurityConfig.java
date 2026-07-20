@@ -54,6 +54,7 @@ public class AdminApiSecurityConfig {
                         "/thestar/admin", "/thestar/admin/**",
                         "/admin/restaurant/**", "/admin/shop/**",
                         "/admin/members/**", "/admin/coupons/**",
+                        "/feedback/**",
                         "/room/**", "/roomtype/**", "/roomtypephoto/delete/**",
                         "/find/admin/room")
                 .authenticationManager(adminAuthenticationManager)
@@ -63,6 +64,7 @@ public class AdminApiSecurityConfig {
                 .securityContext(ctx -> ctx.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/thestar/admin/login").permitAll()
+                        .requestMatchers("/feedback/report", "/feedback/add").permitAll()
                         .requestMatchers(HttpMethod.GET, "/admin/restaurant/menu/DBGifReader").permitAll()
                         .requestMatchers("/thestar/admin", "/thestar/admin/home",
                                 "/thestar/admin/me", "/thestar/admin/logout").authenticated()
@@ -78,6 +80,8 @@ public class AdminApiSecurityConfig {
                             .hasAnyAuthority(RoleCodes.CONTENT_ADMIN, RoleCodes.SUPER_ADMIN)
                         .requestMatchers("/admin/members/**", "/admin/coupons/**")
                             .hasAnyAuthority(RoleCodes.MEMBER_ADMIN, RoleCodes.SUPER_ADMIN)
+                        .requestMatchers("/feedback/**")
+                            .hasAnyAuthority(RoleCodes.FRONT_DESK, RoleCodes.SUPER_ADMIN)
                         .requestMatchers("/thestar/admin/access",
                                 "/thestar/admin/employee/*/roles",
                                 "/thestar/admin/employee/*/delete",
