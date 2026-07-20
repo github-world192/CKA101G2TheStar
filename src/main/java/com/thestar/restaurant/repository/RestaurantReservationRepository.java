@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thestar.restaurant.entity.ReservationStatus;
@@ -14,7 +15,8 @@ import com.thestar.restaurant.entity.RestaurantReservationVO;
 public interface RestaurantReservationRepository extends JpaRepository<RestaurantReservationVO, Integer> {
 
     // 1. 查詢某會員的所有訂位紀錄（透過物件內的 memberId 屬性查詢）
-    @Query("from RestaurantReservationVO r where r.memberVO.memberId = ?1 order by r.date desc")
+	// 寫法一：完全以「編號越大越上面」為主（最推薦，最符合最新訂位在最上面的直覺）
+    @Query("from RestaurantReservationVO r where r.memberVO.memberId = ?1 order by r.reservationId desc")
     List<RestaurantReservationVO> findByMemberId(Integer memberId);
 
     // 2. 查詢某會員特定狀態的訂位
@@ -39,7 +41,12 @@ public interface RestaurantReservationRepository extends JpaRepository<Restauran
     @Modifying
     @Query("update RestaurantReservationVO r set r.reservationStatus = com.thestar.restaurant.entity.ReservationStatus.FINISHED where r.reservationId = ?1")
     void finishReservation(int reservationId);
-
+    
+ // 在 RestaurantReservationRepository.java 中
+    @Query("SELECT COUNT(r) FROM RestaurantReservationVO r WHERE r.date = :date " +
+           "AND r.businessHoursVO.sessionId = :sessionId " +
+           "AND r.reservationStatus IN ('BOOKED', 'RESERVED', 'CHECKED_IN')") // 確保包含 BOOKED
+    long countActiveReservations(@Param("date") java.sql.Date date, @Param("sessionId") Integer sessionId);
     
     @Query("from RestaurantReservationVO r where r.memberVO.memberId = ?1 and r.reservationStatus = ?2 and r.reviewStatus = false")
     List<RestaurantReservationVO> findUnreviewedReservations(Integer memberId, ReservationStatus status);
