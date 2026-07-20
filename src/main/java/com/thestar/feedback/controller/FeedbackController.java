@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.thestar.feedback.entity.FeedbackVO;
 import com.thestar.feedback.service.FeedbackService;
+import com.thestar.employee.security.EmployeeUserDetails;
 import com.thestar.member.entity.MemberVO;
 import com.thestar.member.service.MemberService;
 
@@ -79,8 +81,8 @@ public class FeedbackController {
 	@PostMapping("/reply")
 	@ResponseBody
 	public FeedbackVO reply(@RequestParam Integer ticketId, @RequestParam String replyContent,
-			@RequestParam Integer employeeId) {
-		return service.replyFeedback(ticketId, replyContent, employeeId);
+			@AuthenticationPrincipal EmployeeUserDetails principal) {
+		return service.replyFeedback(ticketId, replyContent, principal.getEmployeeId());
 	}
 
 	// 查詢所有問題回報紀錄
