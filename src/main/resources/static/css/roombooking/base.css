@@ -39,7 +39,8 @@ body {
     color: var(--ink);
     font-weight: 300;
     font-size: 15px;
-    line-height: 1.7
+    line-height: 1.7;
+    font-variant-numeric: lining-nums tabular-nums;
 }
 
 h1, h2, h3 {
