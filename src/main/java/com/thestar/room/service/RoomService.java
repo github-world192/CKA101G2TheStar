@@ -1,5 +1,6 @@
 package com.thestar.room.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.thestar.room.entity.RoomTypeVO;
 import com.thestar.room.entity.RoomVO;
+import com.thestar.room.repository.RoomInventoryRepository;
 import com.thestar.room.repository.RoomRepository;
 import com.thestar.stayrecord.entity.StayRecordVO;
 import com.thestar.stayrecord.repository.StayRecordRepository;
@@ -26,6 +28,9 @@ public class RoomService {
 
 	@Autowired
 	private StayRecordRepository stayRecordRepository;
+
+	@Autowired
+	private RoomInventoryRepository roomInventoryRepository;
 
 	// 查詢所有房間
 	public List<RoomVO> findAll() {
@@ -124,4 +129,6 @@ public class RoomService {
 		// 呼叫剛剛新增的 Repository 方法
 		return stayRecordRepository.countActiveByRoomTypeId(roomTypeId);
 	}
+
+	
 }
