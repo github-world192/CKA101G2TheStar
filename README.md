@@ -12,3 +12,4 @@
 | **shop@star.com** | 商品管理員 |
 | **member@star.com** | 會員管理員（管理會員、優惠券、會員停權） |
 | **content@star.com** | 文章管理員 |
+ooooooo
