@@ -63,11 +63,21 @@ public class FeedbackService {
 	}
 
 	// 檢查問題狀態
-	public FeedbackVO replyFeedback(Integer ticketId, String replyContent, Integer employeeId) {
+	public FeedbackVO replyFeedback(Integer ticketId, String replyContent, Integer employeeId, String mail) {
 		FeedbackVO feedback = repository.findById(ticketId).orElseThrow();
 
 		if (feedback.getTicketStatus() == 1) {
 			throw new IllegalStateException("此案件已回覆，無法重複操作！");
+		}
+
+		// 2. 【核心修改】先嘗試寄信！如果信寄不出去，會直接噴 Exception，
+		// 因為上面有 @Transactional，資料庫這時候還沒被修改，所以不會被改成已回覆。
+		String sub = "The Star Hotel 問題回報回覆 (案件編號: " + ticketId + ")";
+		try {
+			mailService.sendMail(mail, sub, replyContent);
+		} catch (Exception e) {
+			// 直接拋出執行期例外，終止整個流程，並把真正的錯誤訊息帶出去
+			throw new RuntimeException("寄送失敗：" + e.getMessage());
 		}
 
 		feedback.setReplyContent(replyContent);
