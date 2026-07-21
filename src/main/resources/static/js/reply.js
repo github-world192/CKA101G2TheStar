@@ -140,7 +140,7 @@ function closeViewModal() {
     }
 }
 
-// 送出回覆
+// 送出回覆 (採用嚴格驗證：寄信成功才算完成，失敗則資料庫不寫入、不變成已回覆)
 async function submitReply(event) {
     const btn = event.target;
     const textArea = document.getElementById('replyContent');
@@ -158,34 +158,33 @@ async function submitReply(event) {
     btn.innerText = "處理中...";
 
     try {
-        const dbFormData = new URLSearchParams();
-        dbFormData.append('ticketId', ticketId);
-        dbFormData.append('replyContent', replyContent);
+        const formData = new URLSearchParams();
+        formData.append('ticketId', ticketId);
+        formData.append('replyContent', replyContent);
+        formData.append('email', email); // 將信箱一併傳給後端進行寄信驗證
 
-        const dbRes = await fetch('/feedback/reply', {
+        // 呼叫合併後的 /feedback/reply 接口
+        const response = await fetch('/feedback/reply', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: dbFormData
+            body: formData
         });
 
-        if (!dbRes.ok) throw new Error("資料庫更新失敗");
-
-        const mailRes = await fetch('/feedback/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ 'ticketId': ticketId, 'email': email, 'message': replyContent })
-        });
-
-        if (mailRes.ok) {
-            alert("回覆成功且郵件已發送！");
-            closeModal();
-            loadFeedback();
-        } else {
-            alert("資料庫更新成功，但郵件伺服器寄送失敗。");
+        // 如果後端寄信失敗或發生例外，會噴出 500 錯誤與錯誤訊息
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "系統處理失敗");
         }
+
+        // 成功情況
+        alert("回覆成功，郵件已順利發送！");
+        closeModal();
+        loadFeedback(); // 重新載入表格，此時該筆會順利變成「已回覆」
+
     } catch (error) {
         console.error(error);
-        alert("操作失敗，請稍後再試。");
+        // 畫面直接跳出原因（例如：尚未設定 Gmail 帳號或應用程式密碼），且因為交易 Rollback，資料庫不會被改成已回覆
+        alert("回覆失敗！\n錯誤原因：" + error.message);
     } finally {
         btn.disabled = false;
         btn.innerText = "送出回覆";
