@@ -6,81 +6,106 @@
 	<div class="main-content">
 		<div th:replace="~{admin/shop_sidebar :: topbar('訂單管理')}"></div>
 		<div class="page-body">
+
+			<style>
+				.order-table-wrap table { min-width: 1040px; }
+				.order-table-wrap td,
+				.order-table-wrap th { white-space: nowrap; }
+				.order-table-wrap td.col-name { white-space: normal; }
+			</style>
+
 			<div class="card p-4">
 				<h5 class="m-0 fw-bold mb-3">
 					<i class="fa-solid fa-cart-shopping me-2"></i>訂單列表
 				</h5>
+
 				<div class="mb-3 d-flex gap-2 flex-wrap">
 					<a href="/admin/shop/order/listAllOrders" class="btn btn-sm"
 						th:classappend="${selectedFilter == null and selectedPaymentStatus == null} ? 'btn-gold' : 'btn-outline-gold'">
-						全部訂單 </a> <a href="/admin/shop/order/listAllOrders?filter=pending"
-						class="btn btn-sm"
+						全部訂單 </a>
+					<a href="/admin/shop/order/listAllOrders?filter=pending" class="btn btn-sm"
 						th:classappend="${selectedFilter == 'pending'} ? 'btn-gold' : 'btn-outline-gold'">
-						待出貨 </a> <a href="/admin/shop/order/listAllOrders?filter=shipping"
-						class="btn btn-sm"
+						待出貨 </a>
+					<a href="/admin/shop/order/listAllOrders?filter=shipping" class="btn btn-sm"
 						th:classappend="${selectedFilter == 'shipping'} ? 'btn-gold' : 'btn-outline-gold'">
-						出貨中 </a> <a href="/admin/shop/order/listAllOrders?filter=delivered"
-						class="btn btn-sm"
+						出貨中 </a>
+					<a href="/admin/shop/order/listAllOrders?filter=delivered" class="btn btn-sm"
 						th:classappend="${selectedFilter == 'delivered'} ? 'btn-gold' : 'btn-outline-gold'">
-						已送達 </a> <a href="/admin/shop/order/listAllOrders?paymentStatus=0"
-						class="btn btn-sm"
+						已送達 </a>
+					<a href="/admin/shop/order/listAllOrders?paymentStatus=0" class="btn btn-sm"
 						th:classappend="${selectedPaymentStatus != null and selectedPaymentStatus == 0} ? 'btn-gold' : 'btn-outline-gold'">
-						未付款 </a> <a href="/admin/shop/order/listAllOrders?filter=cancelled"
-						class="btn btn-sm"
+						未付款 </a>
+					<a href="/admin/shop/order/listAllOrders?filter=cancelled" class="btn btn-sm"
 						th:classappend="${selectedFilter == 'cancelled'} ? 'btn-gold' : 'btn-outline-gold'">
 						已取消 </a>
 				</div>
-				<table class="table table-bordered table-hover align-middle">
-					<thead class="table-light">
-						<tr>
-							<th>訂單編號</th>
-							<th>會員編號</th>
-							<th>訂單時間</th>
-							<th>總額</th>
-							<th>取貨方式</th>
-							<th>付款狀態</th>
-							<th>訂單狀態</th>
-							<th>收件人</th>
-							<th>電話</th>
-							<th width="100">操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="order : ${orderListData}">
-							<td th:text="${order.shopOrderId}"></td>
-							<td th:text="${order.memberId}"></td>
-							<td th:text="${order.shopOrderTime}"></td>
-							<td th:text="'$' + ${order.shopOrderTotal}"
-								class="text-danger fw-bold"></td>
-							<td><span th:if="${order.shopOrderPickup == 0}">自取</span> <span
-								th:if="${order.shopOrderPickup == 1}">宅配</span></td>
-							<td><span th:if="${order.shopPaymentStatus == 0}"
-								class="badge bg-warning text-dark">未付款</span> <span
-								th:if="${order.shopPaymentStatus == 1}" class="badge bg-success">已付款</span>
-								<span th:if="${order.shopPaymentStatus == 2}"
-								class="badge bg-secondary">已退款</span></td>
-							<td><span th:if="${order.shopOrderStatus == 0}"
-								class="badge bg-info text-dark">訂單成立</span> <span
-								th:if="${order.shopOrderStatus == 1}" class="badge bg-primary">出貨中</span>
-								<span th:if="${order.shopOrderStatus == 2}"
-								class="badge bg-success">已送達</span> <span
-								th:if="${order.shopOrderStatus == 3}" class="badge bg-danger">已取消</span>
-							</td>
-							<td th:text="${order.shopOrderName}"></td>
-							<td th:text="${order.shopOrderPhone}"></td>
-							<td>
-								<form th:action="@{/admin/shop/order/getOne}" method="post"
-									style="display: inline;">
-									<input type="hidden" name="shopOrderId"
-										th:value="${order.shopOrderId}">
-									<button type="submit" class="btn btn-warning btn-sm">
-										<i class="fa-solid fa-eye"></i>
-									</button>
-								</form>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+
+				<div class="table-responsive order-table-wrap">
+					<table class="table table-bordered table-hover align-middle">
+						<thead class="table-light">
+							<tr>
+								<th style="width: 90px">訂單編號</th>
+								<th style="width: 90px">會員編號</th>
+								<th style="width: 160px">訂單時間</th>
+								<th style="width: 100px">總額</th>
+								<th style="width: 90px">取貨方式</th>
+								<th style="width: 100px">付款狀態</th>
+								<th style="width: 100px">訂單狀態</th>
+								<th style="width: 110px">收件人</th>
+								<th style="width: 130px">電話</th>
+								<th style="width: 80px">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="order : ${orderListData}">
+								<td th:text="${order.shopOrderId}"></td>
+								<td th:text="${order.memberId}"></td>
+								<td
+									th:text="${#temporals.format(order.shopOrderTime, 'yyyy/MM/dd HH:mm')}"></td>
+								<td th:text="'$' + ${order.shopOrderTotal}"
+									class="text-danger fw-bold"></td>
+								<td>
+									<span th:if="${order.shopOrderPickup == 0}">自取</span>
+									<span th:if="${order.shopOrderPickup == 1}">宅配</span>
+								</td>
+								<td>
+									<span th:if="${order.shopPaymentStatus == 0}"
+										class="badge bg-warning text-dark">未付款</span>
+									<span th:if="${order.shopPaymentStatus == 1}"
+										class="badge bg-success">已付款</span>
+									<span th:if="${order.shopPaymentStatus == 2}"
+										class="badge bg-secondary">已退款</span>
+								</td>
+								<td>
+									<span th:if="${order.shopOrderStatus == 0}"
+										class="badge bg-info text-dark">訂單成立</span>
+									<span th:if="${order.shopOrderStatus == 1}"
+										class="badge bg-primary">出貨中</span>
+									<span th:if="${order.shopOrderStatus == 2}"
+										class="badge bg-success">已送達</span>
+									<span th:if="${order.shopOrderStatus == 3}"
+										class="badge bg-danger">已取消</span>
+								</td>
+								<td class="col-name" th:text="${order.shopOrderName}"></td>
+								<td th:text="${order.shopOrderPhone}"></td>
+								<td>
+									<form th:action="@{/admin/shop/order/getOne}" method="post"
+										style="display: inline;">
+										<input type="hidden" name="shopOrderId"
+											th:value="${order.shopOrderId}">
+										<button type="submit" class="btn btn-warning btn-sm">
+											<i class="fa-solid fa-eye"></i>
+										</button>
+									</form>
+								</td>
+							</tr>
+							<tr th:if="${orderListData == null or orderListData.isEmpty()}">
+								<td colspan="10" class="text-center text-muted py-4">目前沒有符合條件的訂單</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
 			</div>
 		</div>
 	</div>
